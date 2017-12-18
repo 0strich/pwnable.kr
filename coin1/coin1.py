@@ -28,12 +28,9 @@ for i in range(100):
 		recv = int(s.recv(128))
 		if(i == C-2): ex_recv, ex_send = recv, send
 
-		if(recv % 2 == 0):
-			start = mid
-			mid = Mid(start + end)
-		else:
-			end = mid - 1
-			mid = Mid(start + end)
+		if(recv % 2 == 0): start = mid
+		else: end = mid - 1
+		mid = Mid(start + end)
 
 	if(recv == 0 and send == ''):
 		if(ex_recv % 2 == 1): s.send(ex_send + '\n')
