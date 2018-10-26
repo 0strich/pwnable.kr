@@ -38,4 +38,3 @@ for i in range(100):
 # Print Flag
 print(s.recv(1024))
 s.close()
-
