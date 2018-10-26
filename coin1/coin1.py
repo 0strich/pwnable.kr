@@ -1,44 +1,41 @@
-import socket
+from socket import *
 
-def Re_num(lst):
-	for i in range(len(lst)):
-		lst[i] = int(lst[i][2:])
-	return lst
+# connect pwnable.kr:9007
+addr = ('pwnable.kr', 9007)
+s = socket()
+s.connect(addr)
 
-def Mid(num):
-	if(num % 2 == 0): return num / 2
-	else: return num / 2 + 1
-
-conn = ('pwnable.kr', 9007)
-
-s = socket.socket()
-s.connect(conn)
+# print description
 print(s.recv(2048))
 
-# repeat 100 times
+# Repeat 100 times
 for i in range(100):
-	lst = Re_num(s.recv(128).split())
-	N, C = lst[0], lst[1]
-	start, mid, end = 0, Mid(N), N
+    N, C = s.recv(30).split()
+    N, C = int(N[2:]), int(C[2:])
+    H, L = N-1, 0
+    M = (L+H)/2
+    string = ' '.join([str(insert) for insert in range(L, M)])
 
-	# chances number
-	for i in range(C):
-		send = ' '.join(str(i) for i in range(start, mid))
-		s.send(send + '\n')
-		recv = int(s.recv(128))
-		if(i == C-2): ex_recv, ex_send = recv, send
+    # Repeat Chances Time
+    for j in range(C):
+        s.send(string + '\n')
+        recv = s.recv(10)
 
-		if(recv % 2 == 0): start = mid
-		else: end = mid - 1
-		mid = Mid(start + end)
+        if(int(recv) % 2 == 0):
+            L = M
+            M = (L+H)/4
+        else:
+            H = M+1
+            M = (L+H)/2
 
-	if(recv == 0 and send == ''):
-		if(ex_recv % 2 == 1): s.send(ex_send + '\n')
-		else: s.send(str(int(ex_send)+1) + '\n')
-	elif(recv == 9): s.send(send + '\n')
-	elif(recv == 10): s.send(str(int(send)+1) + '\n')
-	print(s.recv(128))
+        string = ' '.join([str(insert) for insert in range(L, M)])
 
-# Print Falg
-print(s.recv(128))
+    if(recv == 10):
+        s.send(str(int(string)-1) + '\n')
+    else:
+        s.send(string + '\n')
+    print(s.recv(1024))
+# Print Flag
+print(s.recv(1024))
 s.close()
+
