@@ -2,8 +2,8 @@ from socket import *
 from re import *
 
 string = ''
-square, binary = 0, 0
-sw = 1
+sq, bi = 0, 0
+sw = 0
 add = 0
 calc_bin = 0
 lst_n = 0
@@ -16,29 +16,28 @@ s.recv(2048)
 
 # Repeat 100 times
 for i in range(100):
-    lst = s.recv(20).split()
-    N, C = int(lst[0][2:]), int(lst[1][2:])
+    N, C = map(int, findall('\d+', s.recv(50)))
     for i in range(C):
-        square = 2 ** i
-        binary = square
-        for j in range(square, N):
-            if(sw % 2 == 1):
+        sq = 2 ** i
+        bi = sq
+        for j in range(sq, N):
+            if(sw % 2 == 0):
                 string += str(j-1) + ' '
-                binary -= 1
+                bi -= 1
             else:
-                binary -= 1
+                bi -= 1
 
-            if(binary == 0):
+            if(bi == 0):
                 sw += 1
-                binary = square
+                bi = sq
         string = string[:-1] + '-'
-        sw = 1
+        sw = 0
     string = string[:-1] + '\n'
     s.send(string)
-    lst = s.recv(100).split('-')
-    calc_bin = len(lst)
+    recv = findall('\d+', s.recv(100))
+    calc_bin = len(recv)
     for result in range(calc_bin):
-        if(int(lst[result]) % 10 != 0):
+        if(int(recv[result]) % 10 != 0):
             add += 2 ** result
     s.send(str(add-1) + '\n')
     print(s.recv(100))
