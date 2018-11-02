@@ -2,7 +2,6 @@ from socket import *
 from re import *
 
 bi, sq, sw, num = 0,0,0,0
-string = ''
 lt_send = 0
 
 addr = ('pwnable.kr', 9008)
@@ -12,6 +11,7 @@ s.recv(2048)
 
 # Repeat 100 times
 for i in range(100):
+    string = ''
     init = s.recv(50).decode('utf-8').split()
     N, C = int(findall('\d+', init[0])[0]), int(findall('\d+', init[1])[0])
 
@@ -43,6 +43,11 @@ for i in range(100):
            lt_send += 2 ** last
     s.send((str(lt_send) + '\n').encode('utf-8'))
     print(s.recv(100).decode('utf-8'))
+    string = ''
+    lt_send = 0
+
+# Print Flag
+print(s.recv(1024).decode('utf-8'))
 
 # cancle socket connect
 s.close()

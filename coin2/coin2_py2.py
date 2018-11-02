@@ -1,12 +1,7 @@
 from socket import *
 from re import *
 
-string = ''
-sq, bi = 0, 0
-sw = 0
-add = 0
-calc_bin = 0
-lst_n = 0
+sq, bi, sw, add, calc_bin, lst_n = 0,0,0,0,0,0
 
 addr = ('pwnable.kr', 9008)
 s = socket()
@@ -16,7 +11,10 @@ s.recv(2048)
 
 # Repeat 100 times
 for i in range(100):
+    string = ''
     N, C = map(int, findall('\d+', s.recv(50)))
+
+    # Repeat Chance times
     for i in range(C):
         sq = 2 ** i
         bi = sq
@@ -41,4 +39,8 @@ for i in range(100):
             add += 2 ** result
     s.send(str(add-1) + '\n')
     print(s.recv(100))
+    string = ''
+    add = 0
+
+print(s.recv(1024))
 s.close()
